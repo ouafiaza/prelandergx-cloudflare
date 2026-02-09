@@ -65,7 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const el = document.getElementById(cta.id);
         el.innerText = cta.text;
         el.href = finalUrl;
-        el.addEventListener('click', () => {
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 event: "prelander_click",
@@ -73,6 +75,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 location: cta.id,
                 variant: CONFIG.VARIANT
             });
+
+            if (typeof fbq === 'function') {
+                fbq('trackCustom', 'Go2Offer', {
+                    offer: 'opera-gx',
+                    placement: cta.id,
+                    page: window.location.pathname
+                });
+            }
+
+            setTimeout(() => {
+                window.location.href = finalUrl;
+            }, 180);
         });
     });
 
